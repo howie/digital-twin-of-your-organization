@@ -27,3 +27,24 @@ export async function healthCheck(): Promise<{ status: string }> {
   const { data } = await api.get<{ status: string }>('/health')
   return data
 }
+
+export interface ChatMessage {
+  role: 'user' | 'agent'
+  content: string
+}
+
+interface ChatResponse {
+  message: string
+}
+
+export async function sendMessage(
+  agentId: string,
+  message: string,
+  history: ChatMessage[],
+): Promise<string> {
+  const { data } = await api.post<ChatResponse>(`/agents/${agentId}/chat`, {
+    message,
+    history,
+  })
+  return data.message
+}
